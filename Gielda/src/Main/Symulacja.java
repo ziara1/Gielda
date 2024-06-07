@@ -12,6 +12,7 @@ public class Symulacja {
     private List<Inwestor> inwestorzy = new ArrayList<>();
     private Map<String, Akcja> akcje = new HashMap<>();
     private int aktualnaTura = 0;
+    private int aktualnaKolejnosc = 0;
 
     public void wczytajZPliku(String nazwaPliku) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(nazwaPliku))) {
@@ -86,5 +87,13 @@ public class Symulacja {
 
     public String[] getTickeryAkcji() {
         return akcje.keySet().toArray(new String[0]);
+    }
+
+    public int getAktualnaKolejnosc(){
+        return aktualnaKolejnosc;
+    }
+
+    public void zwiekszKolejnosc(){
+        aktualnaKolejnosc++;
     }
 }

@@ -12,9 +12,10 @@ public class Zlecenie {
     private int tura;
     private int terminWaznosci;
     private Zlecenie next;
+    private int kolejnosc;
 
     public Zlecenie(Inwestor inwestor, Akcja akcja, Zlecenie next, TypZlecenia typZlecenia,
-                    int limitCeny, int ilosc, int tura, int terminWaznosci){
+                    int limitCeny, int ilosc, int tura, int terminWaznosci, int kolejnosc){
         this.typZlecenia = typZlecenia;
         this.limitCeny = limitCeny;
         this.ilosc = ilosc;
@@ -22,6 +23,7 @@ public class Zlecenie {
         this.akcja = akcja;
         this.tura = tura;
         this.terminWaznosci = terminWaznosci;
+        this.kolejnosc = kolejnosc;
     }
 
     public int getLimitCeny() {
@@ -60,27 +62,58 @@ public class Zlecenie {
         this.next = next;
     }
 
-    public void przetworz(){
+    public int getKolejnosc(){
+        return kolejnosc;
+    }
+
+    public void przetworz(Zlecenie z){
+        while (this.getIlosc() != 0 && z.getNext() != null) {
+            int cenaTransakcji = this.getLimitCeny();
+            int iloscTransakcji = Math.min(this.getIlosc(), z.getIlosc());
+            Zlecenie kupno;
+            Zlecenie sprzedaz;
+            if (this.typZlecenia == TypZlecenia.KUPNO) {
+                kupno = this;
+                sprzedaz = z;
+            } else {
+                kupno = z;
+                sprzedaz = this;
+            }
+            this.zmniejszIlosc(iloscTransakcji);
+            z.zmniejszIlosc(iloscTransakcji);
+
+            kupno.getInwestor().dodajGotowke(-cenaTransakcji * iloscTransakcji);
+            sprzedaz.getInwestor().dodajGotowke(cenaTransakcji * iloscTransakcji);
+
+            kupno.getInwestor().dodajAkcje(akcja, iloscTransakcji);
+            sprzedaz.getInwestor().dodajAkcje(akcja, -iloscTransakcji);
+
+            akcja.setOstatniaCena(cenaTransakcji);
+            z = z.getNext();
+
+            if (this.getIlosc() == 0) {
+                this.poll();
+            }
+            if (z.getIlosc() == 0) {
+                z.poll();
+            }
+        }
+
     }
 
     // czy this jest pozniej w kolejce od z
     public boolean czyPozniejsze(Zlecenie z){
         boolean result = false;
-        if (this.typZlecenia == TypZlecenia.SPRZEDAZ){
-            result = true;
+        if (this.typZlecenia == z.getTypZlecenia()) {
+            if (this.typZlecenia == TypZlecenia.SPRZEDAZ)
+                result = true;
+            if (this.limitCeny < z.getLimitCeny())
+                return !result;
+            if (this.limitCeny > z.getLimitCeny())
+                return result;
         }
-
-        if (this.limitCeny < z.getLimitCeny())
-            result = !result;
-
-        if (this.limitCeny == z.getLimitCeny()){
-            if (this.tura > z.getTura())
-                return true;
-            if (this.tura < z.getTura())
-                return false;
-            return true;
-        }
-
-        return result;
+        if (this.tura == z.getTura())
+            return this.kolejnosc > z.getKolejnosc();
+        return this.tura > z.getTura();
     }
 }

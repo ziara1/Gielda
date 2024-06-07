@@ -27,22 +27,24 @@ public class SMAInwestor extends Inwestor {
             int tura = symulacja.getAktualnaTura();
             int limitCeny = cena + random.nextInt(21) - 10;
             int typ = random.nextInt(0, 4);
+            int kolejnosc = symulacja.getAktualnaKolejnosc();
 
             if (smaKrotki < smaDlugi) {
                 int ilosc = random.nextInt(portfel.getOrDefault(ticker, 0)) + 1;
                 if (ilosc > super.ileAkcji(akcja)) {
                     if (typ == 0)
                         akcja.dodajZlecenieSprzedazy(new ZlecenieNatychmiastowe(this, akcja, null, TypZlecenia.SPRZEDAZ,
-                                limitCeny, ilosc, tura));
+                                limitCeny, ilosc, tura, kolejnosc));
                     else if (typ == 1)
                         akcja.dodajZlecenieSprzedazy(new ZlecenieWykonajLubAnuluj(this, akcja, null, TypZlecenia.SPRZEDAZ,
-                                limitCeny, ilosc, tura));
+                                limitCeny, ilosc, tura, kolejnosc));
                     else if (typ == 2)
                         akcja.dodajZlecenieSprzedazy(new ZlecenieBezTerminu(this, akcja, null, TypZlecenia.SPRZEDAZ,
-                                limitCeny, ilosc, tura));
+                                limitCeny, ilosc, tura, kolejnosc));
                     else
                         akcja.dodajZlecenieSprzedazy(new ZlecenieDoKoncaTury(this, akcja, null, TypZlecenia.SPRZEDAZ,
-                                limitCeny, ilosc, tura, random.nextInt(tura, tura + 11)));
+                                limitCeny, ilosc, tura, random.nextInt(tura, tura + 11), kolejnosc));
+                    symulacja.zwiekszKolejnosc();
                 }
 
             } else if (smaKrotki > smaDlugi) {
@@ -50,16 +52,17 @@ public class SMAInwestor extends Inwestor {
                 if (gotowka >= limitCeny * ilosc) {
                     if (typ == 0)
                         akcja.dodajZlecenieKupna(new ZlecenieNatychmiastowe(this, akcja, null, TypZlecenia.KUPNO,
-                                limitCeny, ilosc, tura));
+                                limitCeny, ilosc, tura, kolejnosc));
                     else if (typ == 1)
                         akcja.dodajZlecenieKupna(new ZlecenieWykonajLubAnuluj(this, akcja, null, TypZlecenia.KUPNO,
-                                limitCeny, ilosc, tura));
+                                limitCeny, ilosc, tura, kolejnosc));
                     else if (typ == 2)
                         akcja.dodajZlecenieKupna(new ZlecenieBezTerminu(this, akcja, null, TypZlecenia.KUPNO,
-                                limitCeny, ilosc, tura));
+                                limitCeny, ilosc, tura, kolejnosc));
                     else
                         akcja.dodajZlecenieKupna(new ZlecenieDoKoncaTury(this, akcja, null, TypZlecenia.KUPNO,
-                                limitCeny, ilosc, tura, random.nextInt(tura, tura + 11)));
+                                limitCeny, ilosc, tura, random.nextInt(tura, tura + 11), kolejnosc));
+                    symulacja.zwiekszKolejnosc();
                 }
             }
         }
