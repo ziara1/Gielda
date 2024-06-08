@@ -27,6 +27,8 @@ public class LosowyInwestor extends Inwestor {
         if (random.nextBoolean()) {
             int ilosc = random.nextInt(10) + 1;
             if (gotowka >= limitCeny * ilosc) {
+                // zamrazam srodki
+                this.dodajGotowke( -limitCeny * ilosc);
                 if (typ == 0)
                     akcja.dodajZlecenieKupna(new ZlecenieNatychmiastowe(this, akcja, null, TypZlecenia.KUPNO,
                             limitCeny, ilosc, tura, kolejnosc));
@@ -42,23 +44,27 @@ public class LosowyInwestor extends Inwestor {
                 symulacja.zwiekszKolejnosc();
             }
         } else {
-            int ilosc = random.nextInt(portfel.getOrDefault(ticker + 1, 1)) + 1;
-            if (ilosc <= super.ileAkcji(akcja)) {
-                if (typ == 0)
-                    akcja.dodajZlecenieSprzedazy(new ZlecenieNatychmiastowe(this, akcja, null, TypZlecenia.SPRZEDAZ,
-                            limitCeny, ilosc, tura, kolejnosc));
-                else if (typ == 1)
-                    akcja.dodajZlecenieSprzedazy(new ZlecenieWykonajLubAnuluj(this, akcja, null, TypZlecenia.SPRZEDAZ,
-                            limitCeny, ilosc, tura, kolejnosc));
-                else if (typ == 2)
-                    akcja.dodajZlecenieSprzedazy(new ZlecenieBezTerminu(this, akcja, null, TypZlecenia.SPRZEDAZ,
-                            limitCeny, ilosc, tura, kolejnosc));
-                else
-                    akcja.dodajZlecenieSprzedazy(new ZlecenieDoKoncaTury(this, akcja, null, TypZlecenia.SPRZEDAZ,
-                            limitCeny, ilosc, tura, random.nextInt(tura, tura + 11), kolejnosc));
-                symulacja.zwiekszKolejnosc();
+            if (portfel.get(akcja) > 0) {
+                int ilosc = random.nextInt(portfel.get(akcja)) + 1;
+                if (ilosc <= super.ileAkcji(akcja)) {
+                    this.dodajAkcje(akcja, -ilosc);
+                    if (typ == 0)
+                        akcja.dodajZlecenieSprzedazy(new ZlecenieNatychmiastowe(this, akcja, null, TypZlecenia.SPRZEDAZ,
+                                limitCeny, ilosc, tura, kolejnosc));
+                    else if (typ == 1)
+                        akcja.dodajZlecenieSprzedazy(new ZlecenieWykonajLubAnuluj(this, akcja, null, TypZlecenia.SPRZEDAZ,
+                                limitCeny, ilosc, tura, kolejnosc));
+                    else if (typ == 2)
+                        akcja.dodajZlecenieSprzedazy(new ZlecenieBezTerminu(this, akcja, null, TypZlecenia.SPRZEDAZ,
+                                limitCeny, ilosc, tura, kolejnosc));
+                    else
+                        akcja.dodajZlecenieSprzedazy(new ZlecenieDoKoncaTury(this, akcja, null, TypZlecenia.SPRZEDAZ,
+                                limitCeny, ilosc, tura, random.nextInt(tura, tura + 11), kolejnosc));
+                    symulacja.zwiekszKolejnosc();
+                }
             }
         }
     }
 }
+// zrobic metode zloz zlecenie w inwestorze
 

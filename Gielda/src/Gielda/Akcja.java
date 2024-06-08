@@ -43,6 +43,11 @@ public class Akcja {
         zleceniaSprzedazy.dodajZlecenie(zlecenie);
     }
 
+    public void wyczyscZlecenia(int tura) {
+        zleceniaSprzedazy.wyczyscKolejke(tura);
+        zleceniaKupna.wyczyscKolejke(tura);
+    }
+
     public void przetworzZlecenia() {
         Zlecenie buyPtr = zleceniaKupna.getHead().getNext();
         Zlecenie sellPtr = zleceniaSprzedazy.getHead().getNext();
@@ -73,6 +78,13 @@ public class Akcja {
             suma += cenyHistoria.get(i);
         }
         return suma / (double) n;
+    }
+
+    public void usunZlecenie(Zlecenie z){
+        if (z.getTypZlecenia() == TypZlecenia.KUPNO)
+            zleceniaKupna.usunZlecenie(z);
+        else
+            zleceniaSprzedazy.usunZlecenie(z);
     }
 
     @Override

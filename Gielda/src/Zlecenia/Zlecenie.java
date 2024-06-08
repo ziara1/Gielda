@@ -3,6 +3,8 @@ package Zlecenia;
 import Gielda.Akcja;
 import Gielda.Inwestor;
 
+import static java.lang.Math.abs;
+
 public class Zlecenie {
     private TypZlecenia typZlecenia;
     private int limitCeny;
@@ -63,37 +65,66 @@ public class Zlecenie {
         this.next = next;
     }
 
-    public int getKolejnosc(){
+    public int getKolejnosc() {
         return kolejnosc;
     }
 
-    public void przetworz(Zlecenie z){
+    public int getTerminWaznosci() {
+        return terminWaznosci;
+    }
+
+    public void usunNastepne() {
+        System.out.println("usunieto " + this.getNext());
+        if (this.next.getTypZlecenia() == TypZlecenia.KUPNO)
+            this.next.getInwestor().dodajGotowke(this.next.getLimitCeny() * this.next.getIlosc());
+        else
+            this.next.getInwestor().dodajAkcje(akcja, this.next.getIlosc());
+        this.next = this.next.getNext();
+    }
+
+
+    public void przetworz(Zlecenie z) {
         while (this.getIlosc() != 0 && z.getNext() != null) {
-            int cenaTransakcji = this.getLimitCeny();
-            int iloscTransakcji = Math.min(this.getIlosc(), z.getIlosc());
-            Zlecenie kupno;
-            Zlecenie sprzedaz;
-            if (this.typZlecenia == TypZlecenia.KUPNO) {
-                kupno = this;
-                sprzedaz = z;
-            } else {
+            Zlecenie kupno = this;
+            Zlecenie sprzedaz = z;
+            if (this.typZlecenia == TypZlecenia.SPRZEDAZ) {
                 kupno = z;
                 sprzedaz = this;
             }
-            this.zmniejszIlosc(iloscTransakcji);
-            z.zmniejszIlosc(iloscTransakcji);
+            if (kupno.getLimitCeny() >= sprzedaz.getLimitCeny()) {
 
-            kupno.getInwestor().dodajGotowke(-cenaTransakcji * iloscTransakcji);
-            sprzedaz.getInwestor().dodajGotowke(cenaTransakcji * iloscTransakcji);
+                int iloscTransakcji = Math.min(this.getIlosc(), z.getIlosc());
+                // roznica miedzy cenami
+                int reszta = Math.abs(this.limitCeny - z.getLimitCeny()) * iloscTransakcji;
 
-            kupno.getInwestor().dodajAkcje(akcja, iloscTransakcji);
-            sprzedaz.getInwestor().dodajAkcje(akcja, -iloscTransakcji);
+                int cenaTransakcji = this.getLimitCeny();
 
-            akcja.setOstatniaCena(cenaTransakcji);
+                if (this.czyPozniejsze(z)) {
+                    this.getInwestor().dodajGotowke(reszta);
+                    // liczy sie cena tego wczesniejszego zlecenia
+                    cenaTransakcji = z.getLimitCeny();
+                } else
+                    z.getInwestor().dodajGotowke(reszta);
+
+                this.zmniejszIlosc(iloscTransakcji);
+                z.zmniejszIlosc(iloscTransakcji);
+
+                //kupno.getInwestor().dodajGotowke(-cenaTransakcji * iloscTransakcji);
+                sprzedaz.getInwestor().dodajGotowke(cenaTransakcji * iloscTransakcji);
+
+                kupno.getInwestor().dodajAkcje(akcja, iloscTransakcji);
+                //sprzedaz.getInwestor().dodajAkcje(akcja, -iloscTransakcji);
+
+                akcja.setOstatniaCena(cenaTransakcji);
+                System.out.println("t1 " + this);
+                System.out.println("t2 " + z);
+            }
+            if (z.getIlosc() == 0)
+                z.getAkcja().usunZlecenie(z);
             z = z.getNext();
-
         }
-
+        if (this.getIlosc() == 0)
+            this.getAkcja().usunZlecenie(this);
     }
 
     // czy this jest pozniej w kolejce od z
@@ -110,5 +141,11 @@ public class Zlecenie {
         if (this.tura == z.getTura())
             return this.kolejnosc > z.getKolejnosc();
         return this.tura > z.getTura();
+    }
+
+    @Override
+    public String toString(){
+        return typZlecenia.toString() + " " + limitCeny + " " + ilosc + " " + akcja.toString() +
+                " inwestor:  " + inwestor.toString();
     }
 }

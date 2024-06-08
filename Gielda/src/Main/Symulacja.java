@@ -70,6 +70,10 @@ public class Symulacja {
                 inwestor.podejmijDecyzje(this);
             }
             przetworzZlecenia();
+            for (Map.Entry<String, Akcja> entry : akcje.entrySet()) {
+                Akcja akcja = entry.getValue();
+                akcja.wyczyscZlecenia(aktualnaTura);
+            }
         }
     }
 

@@ -39,9 +39,19 @@ public abstract class Inwestor {
 
     public abstract void podejmijDecyzje(Symulacja symulacja);
 
+    public String portfel(){
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Akcja, Integer> entry : portfel.entrySet()) {
+            Akcja akcja = entry.getKey();
+            Integer ilosc = entry.getValue();
+            sb.append(akcja).append(": ").append(ilosc).append(" ");
+        }
+        return sb.toString();
+    }
+
     @Override
     public String toString(){
-        return gotowka + " " + portfel.toString();
+        return gotowka + " " + portfel();
     }
 
 }
