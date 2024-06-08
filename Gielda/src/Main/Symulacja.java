@@ -23,9 +23,9 @@ public class Symulacja {
             String[] typyInwestorów = linia.split(" ");
             for (String typ : typyInwestorów) {
                 if (typ.equals("R")) {
-                    inwestorzy.add(new LosowyInwestor());
+                    inwestorzy.add(new LosowyInwestor(0, new HashMap<>()));
                 } else if (typ.equals("S")) {
-                    inwestorzy.add(new SMAInwestor());
+                    inwestorzy.add(new SMAInwestor(0, new HashMap<>()));
                 }
             }
 
@@ -44,12 +44,13 @@ public class Symulacja {
             String[] informacjeOPortfelu = linia.split(" ");
             int gotówka = Integer.parseInt(informacjeOPortfelu[0]);
             for (Inwestor inwestor : inwestorzy) {
-                inwestor.setGotowka(gotówka);
+                inwestor.dodajGotowke(gotówka);
                 for (int i = 1; i < informacjeOPortfelu.length; i++) {
                     String[] części = informacjeOPortfelu[i].split(":");
-                    String ticker = części[0];
+                    //String ticker = części[0];
+                    Akcja akcja = getAkcja(części[0]);
                     int ilość = Integer.parseInt(części[1]);
-                    inwestor.dodajAkcje(ticker, ilość);
+                    inwestor.dodajAkcje(akcja, ilość);
                 }
             }
         }

@@ -25,7 +25,7 @@ public class Akcja {
         return ostatniaCena;
     }
 
-    public int setOstatniaCena(int ostatniaCena) {
+    public void setOstatniaCena(int ostatniaCena) {
         this.ostatniaCena = ostatniaCena;
     }
 
@@ -46,20 +46,20 @@ public class Akcja {
         Zlecenie sellPtr = zleceniaSprzedazy.getHead().getNext();
         while (buyPtr != zleceniaKupna.getTail() && sellPtr != zleceniaSprzedazy.getTail()) {
             if (buyPtr.czyPozniejsze(sellPtr)){
-                sellPtr.przetworz();
+                sellPtr.przetworz(zleceniaKupna.getHead().getNext());
                 sellPtr = sellPtr.getNext();
             }
             else {
-                buyPtr.przetworz();
+                buyPtr.przetworz(zleceniaSprzedazy.getHead().getNext());
                 buyPtr = buyPtr.getNext();
             }
         }
         while (buyPtr != zleceniaKupna.getTail()) {
-            buyPtr.przetworz();
+            buyPtr.przetworz(zleceniaSprzedazy.getHead().getNext());
             buyPtr = buyPtr.getNext();
         }
         while (sellPtr != zleceniaSprzedazy.getTail()) {
-            sellPtr.przetworz();
+            sellPtr.przetworz(zleceniaKupna.getHead().getNext());
             sellPtr = sellPtr.getNext();
         }
         cenyHistoria.add(ostatniaCena);

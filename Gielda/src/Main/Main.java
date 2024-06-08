@@ -5,7 +5,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         if (args.length != 2) {
-            System.out.println("Użycie: java Główna <plik_wejściowy> <liczba_tur>");
+            System.out.println("Użycie: java Main <plik_wejściowy> <liczba_tur>");
             return;
         }
 

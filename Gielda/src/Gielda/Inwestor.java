@@ -13,6 +13,10 @@ public abstract class Inwestor {
         this.portfel = portfel;
     }
 
+    public void setGotowka(int gotowka) {
+        this.gotowka = gotowka;
+    }
+
     public int getGotowka() {
         return gotowka;
     }

@@ -91,12 +91,6 @@ public class Zlecenie {
             akcja.setOstatniaCena(cenaTransakcji);
             z = z.getNext();
 
-            if (this.getIlosc() == 0) {
-                this.poll();
-            }
-            if (z.getIlosc() == 0) {
-                z.poll();
-            }
         }
 
     }
