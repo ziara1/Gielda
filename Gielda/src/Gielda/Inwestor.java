@@ -38,4 +38,10 @@ public abstract class Inwestor {
     }
 
     public abstract void podejmijDecyzje(Symulacja symulacja);
+
+    @Override
+    public String toString(){
+        return gotowka + " " + portfel.toString();
+    }
+
 }

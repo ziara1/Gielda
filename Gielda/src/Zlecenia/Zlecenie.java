@@ -24,6 +24,7 @@ public class Zlecenie {
         this.tura = tura;
         this.terminWaznosci = terminWaznosci;
         this.kolejnosc = kolejnosc;
+        this.next = next;
     }
 
     public int getLimitCeny() {

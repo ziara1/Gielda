@@ -75,4 +75,9 @@ public class Akcja {
         return suma / (double) n;
     }
 
+    @Override
+    public String toString(){
+        return ticker;
+    }
+
 }
