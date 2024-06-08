@@ -75,10 +75,6 @@ public class Zlecenie {
 
     public void usunNastepne() {
         System.out.println("usunieto " + this.getNext());
-        if (this.next.getTypZlecenia() == TypZlecenia.KUPNO)
-            this.next.getInwestor().dodajGotowke(this.next.getLimitCeny() * this.next.getIlosc());
-        else
-            this.next.getInwestor().dodajAkcje(akcja, this.next.getIlosc());
         this.next = this.next.getNext();
     }
 
@@ -93,27 +89,23 @@ public class Zlecenie {
             }
             if (kupno.getLimitCeny() >= sprzedaz.getLimitCeny()) {
 
-                int iloscTransakcji = Math.min(this.getIlosc(), z.getIlosc());
-                // roznica miedzy cenami
-                int reszta = Math.abs(this.limitCeny - z.getLimitCeny()) * iloscTransakcji;
-
                 int cenaTransakcji = this.getLimitCeny();
-
-                if (this.czyPozniejsze(z)) {
-                    this.getInwestor().dodajGotowke(reszta);
-                    // liczy sie cena tego wczesniejszego zlecenia
+                if (this.czyPozniejsze(z))
                     cenaTransakcji = z.getLimitCeny();
-                } else
-                    z.getInwestor().dodajGotowke(reszta);
+
+
+                int iloscTransakcji = Math.min(Math.min(kupno.getIlosc(), sprzedaz.getIlosc()),
+                        Math.min(sprzedaz.getInwestor().ileAkcji(akcja), kupno.getInwestor().getGotowka() / cenaTransakcji));
+
 
                 this.zmniejszIlosc(iloscTransakcji);
                 z.zmniejszIlosc(iloscTransakcji);
 
-                //kupno.getInwestor().dodajGotowke(-cenaTransakcji * iloscTransakcji);
+                kupno.getInwestor().dodajGotowke(-cenaTransakcji * iloscTransakcji);
                 sprzedaz.getInwestor().dodajGotowke(cenaTransakcji * iloscTransakcji);
 
                 kupno.getInwestor().dodajAkcje(akcja, iloscTransakcji);
-                //sprzedaz.getInwestor().dodajAkcje(akcja, -iloscTransakcji);
+                sprzedaz.getInwestor().dodajAkcje(akcja, -iloscTransakcji);
 
                 akcja.setOstatniaCena(cenaTransakcji);
                 System.out.println("t1 " + this);
@@ -149,3 +141,5 @@ public class Zlecenie {
                 " inwestor:  " + inwestor.toString();
     }
 }
+
+

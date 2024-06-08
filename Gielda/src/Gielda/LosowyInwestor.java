@@ -27,8 +27,6 @@ public class LosowyInwestor extends Inwestor {
         if (random.nextBoolean()) {
             int ilosc = random.nextInt(10) + 1;
             if (gotowka >= limitCeny * ilosc) {
-                // zamrazam srodki
-                this.dodajGotowke( -limitCeny * ilosc);
                 if (typ == 0)
                     akcja.dodajZlecenieKupna(new ZlecenieNatychmiastowe(this, akcja, null, TypZlecenia.KUPNO,
                             limitCeny, ilosc, tura, kolejnosc));
@@ -47,7 +45,6 @@ public class LosowyInwestor extends Inwestor {
             if (portfel.get(akcja) > 0) {
                 int ilosc = random.nextInt(portfel.get(akcja)) + 1;
                 if (ilosc <= super.ileAkcji(akcja)) {
-                    this.dodajAkcje(akcja, -ilosc);
                     if (typ == 0)
                         akcja.dodajZlecenieSprzedazy(new ZlecenieNatychmiastowe(this, akcja, null, TypZlecenia.SPRZEDAZ,
                                 limitCeny, ilosc, tura, kolejnosc));
