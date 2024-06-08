@@ -9,12 +9,12 @@ public class Main {
             return;
         }
 
-        String plikWejściowy = args[0];
+        String input = args[0];
         int liczbaTur = Integer.parseInt(args[1]);
 
         Symulacja symulacja = new Symulacja();
         try {
-            symulacja.wczytajZPliku(plikWejściowy);
+            symulacja.wczytajZPliku("input.txt");
         } catch (IOException e) {
             System.out.println("Błąd odczytu pliku wejściowego: " + e.getMessage());
             return;

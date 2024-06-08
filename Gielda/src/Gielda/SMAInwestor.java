@@ -31,7 +31,7 @@ public class SMAInwestor extends Inwestor {
 
             if (smaKrotki < smaDlugi) {
                 int ilosc = random.nextInt(portfel.getOrDefault(ticker, 0)) + 1;
-                if (ilosc > super.ileAkcji(akcja)) {
+                if (ilosc <= super.ileAkcji(akcja)) {
                     if (typ == 0)
                         akcja.dodajZlecenieSprzedazy(new ZlecenieNatychmiastowe(this, akcja, null, TypZlecenia.SPRZEDAZ,
                                 limitCeny, ilosc, tura, kolejnosc));

@@ -19,6 +19,8 @@ public class Akcja {
         this.ticker = ticker;
         this.ostatniaCena = cena;
         cenyHistoria.add(cena);
+        zleceniaKupna = new KolejkaZlecen(TypZlecenia.KUPNO);
+        zleceniaSprzedazy = new KolejkaZlecen(TypZlecenia.SPRZEDAZ);
     }
 
     public int getOstatniaCena() {

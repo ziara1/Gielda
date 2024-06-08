@@ -14,12 +14,14 @@ public class Symulacja {
     private int aktualnaTura = 0;
     private int aktualnaKolejnosc = 0;
 
-    public void wczytajZPliku(String nazwaPliku) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(nazwaPliku))) {
+    public void wczytajZPliku(String input) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(input))) {
             String linia;
 
             // Wczytaj inwestorów
             linia = reader.readLine();
+            while (linia.trim().startsWith("#"))
+                linia = reader.readLine();
             String[] typyInwestorów = linia.split(" ");
             for (String typ : typyInwestorów) {
                 if (typ.equals("R")) {
@@ -31,6 +33,9 @@ public class Symulacja {
 
             // Wczytaj akcje
             linia = reader.readLine();
+            while (linia.trim().startsWith("#"))
+                linia = reader.readLine();
+            System.out.println(linia);
             String[] informacjeOAckjach = linia.split(" ");
             for (String akcja : informacjeOAckjach) {
                 String[] części = akcja.split(":");
@@ -41,6 +46,8 @@ public class Symulacja {
 
             // Wczytaj początkowy stan portfeli
             linia = reader.readLine();
+            while (linia.trim().startsWith("#"))
+                linia = reader.readLine();
             String[] informacjeOPortfelu = linia.split(" ");
             int gotówka = Integer.parseInt(informacjeOPortfelu[0]);
             for (Inwestor inwestor : inwestorzy) {
