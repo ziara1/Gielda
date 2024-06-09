@@ -65,21 +65,22 @@ public class Symulacja {
 
     public void uruchom(int liczbaTur) {
         for (aktualnaTura = 0; aktualnaTura < liczbaTur; aktualnaTura++) {
+            aktualnaKolejnosc = 0;
             Collections.shuffle(inwestorzy);
             for (Inwestor inwestor : inwestorzy) {
                 inwestor.podejmijDecyzje(this);
             }
-            przetworzZlecenia();
-            for (Map.Entry<String, Akcja> entry : akcje.entrySet()) {
-                Akcja akcja = entry.getValue();
-                akcja.wyczyscZlecenia(aktualnaTura);
-            }
+            przetworzZlecenia(aktualnaTura);
+            //for (Map.Entry<String, Akcja> entry : akcje.entrySet()) {
+              //  Akcja akcja = entry.getValue();
+                //akcja.wyczyscZlecenia(aktualnaTura);
+           // }
         }
     }
 
-    private void przetworzZlecenia() {
+    private void przetworzZlecenia(int aktualnaTura) {
         for (Akcja akcja : akcje.values()) {
-            akcja.przetworzZlecenia();
+            akcja.przetworzZlecenia(aktualnaTura);
         }
     }
 

@@ -35,12 +35,11 @@ public class Akcja {
         return cenyHistoria.size();
     }
 
-    public void dodajZlecenieKupna(Zlecenie zlecenie) {
-        zleceniaKupna.dodajZlecenie(zlecenie);
-    }
-
-    public void dodajZlecenieSprzedazy(Zlecenie zlecenie) {
-        zleceniaSprzedazy.dodajZlecenie(zlecenie);
+    public void dodajZlecenie(Zlecenie zlecenie) {
+        if (zlecenie.getTypZlecenia() == TypZlecenia.SPRZEDAZ)
+            zleceniaSprzedazy.dodajZlecenie(zlecenie);
+        else
+            zleceniaKupna.dodajZlecenie(zlecenie);
     }
 
     public void wyczyscZlecenia(int tura) {
@@ -48,25 +47,25 @@ public class Akcja {
         zleceniaKupna.wyczyscKolejke(tura);
     }
 
-    public void przetworzZlecenia() {
+    public void przetworzZlecenia(int aktualnaTura) {
         Zlecenie buyPtr = zleceniaKupna.getHead().getNext();
         Zlecenie sellPtr = zleceniaSprzedazy.getHead().getNext();
         while (buyPtr != zleceniaKupna.getTail() && sellPtr != zleceniaSprzedazy.getTail()) {
             if (buyPtr.czyPozniejsze(sellPtr)){
-                sellPtr.przetworz(zleceniaKupna.getHead().getNext());
+                sellPtr.przetworz(zleceniaKupna.getHead().getNext(), aktualnaTura);
                 sellPtr = sellPtr.getNext();
             }
             else {
-                buyPtr.przetworz(zleceniaSprzedazy.getHead().getNext());
+                buyPtr.przetworz(zleceniaSprzedazy.getHead().getNext(), aktualnaTura);
                 buyPtr = buyPtr.getNext();
             }
         }
         while (buyPtr != zleceniaKupna.getTail()) {
-            buyPtr.przetworz(zleceniaSprzedazy.getHead().getNext());
+            buyPtr.przetworz(zleceniaSprzedazy.getHead().getNext(), aktualnaTura);
             buyPtr = buyPtr.getNext();
         }
         while (sellPtr != zleceniaSprzedazy.getTail()) {
-            sellPtr.przetworz(zleceniaKupna.getHead().getNext());
+            sellPtr.przetworz(zleceniaKupna.getHead().getNext(), aktualnaTura);
             sellPtr = sellPtr.getNext();
         }
         cenyHistoria.add(ostatniaCena);

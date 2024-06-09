@@ -79,7 +79,7 @@ public class Zlecenie {
     }
 
 
-    public void przetworz(Zlecenie z) {
+    public void przetworz(Zlecenie z, int aktualnaTura) {
         while (this.getIlosc() != 0 && z.getNext() != null) {
             Zlecenie kupno = this;
             Zlecenie sprzedaz = z;
@@ -115,7 +115,7 @@ public class Zlecenie {
                 z.getAkcja().usunZlecenie(z);
             z = z.getNext();
         }
-        if (this.getIlosc() == 0)
+        if (this.getIlosc() == 0 || this.getTerminWaznosci() <= aktualnaTura)
             this.getAkcja().usunZlecenie(this);
     }
 
