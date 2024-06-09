@@ -22,5 +22,6 @@ public class Main {
 
         symulacja.uruchom(liczbaTur);
         symulacja.wypiszWyniki();
+
     }
 }
