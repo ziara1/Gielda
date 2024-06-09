@@ -93,23 +93,23 @@ public class Zlecenie {
                 if (this.czyPozniejsze(z))
                     cenaTransakcji = z.getLimitCeny();
 
-
                 int iloscTransakcji = Math.min(Math.min(kupno.getIlosc(), sprzedaz.getIlosc()),
                         Math.min(sprzedaz.getInwestor().ileAkcji(akcja), kupno.getInwestor().getGotowka() / cenaTransakcji));
 
+                if (!(z instanceof ZlecenieWykonajLubAnuluj) || iloscTransakcji >= z.getIlosc()) {
+                    this.zmniejszIlosc(iloscTransakcji);
+                    z.zmniejszIlosc(iloscTransakcji);
 
-                this.zmniejszIlosc(iloscTransakcji);
-                z.zmniejszIlosc(iloscTransakcji);
+                    kupno.getInwestor().dodajGotowke(-cenaTransakcji * iloscTransakcji);
+                    sprzedaz.getInwestor().dodajGotowke(cenaTransakcji * iloscTransakcji);
 
-                kupno.getInwestor().dodajGotowke(-cenaTransakcji * iloscTransakcji);
-                sprzedaz.getInwestor().dodajGotowke(cenaTransakcji * iloscTransakcji);
+                    kupno.getInwestor().dodajAkcje(akcja, iloscTransakcji);
+                    sprzedaz.getInwestor().dodajAkcje(akcja, -iloscTransakcji);
 
-                kupno.getInwestor().dodajAkcje(akcja, iloscTransakcji);
-                sprzedaz.getInwestor().dodajAkcje(akcja, -iloscTransakcji);
-
-                akcja.setOstatniaCena(cenaTransakcji);
-                System.out.println("t1 " + this);
-                System.out.println("t2 " + z);
+                    akcja.setOstatniaCena(cenaTransakcji);
+                    System.out.println("t1 " + this);
+                    System.out.println("t2 " + z);
+                }
             }
             if (z.getIlosc() == 0)
                 z.getAkcja().usunZlecenie(z);
