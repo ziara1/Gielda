@@ -61,7 +61,7 @@ public class Testy {
         assertEquals(105, inwestor.ileAkcji(akcja));
 
         Symulacja symulacja = new Symulacja();
-        inwestor.zlozZlecenie(akcja, TypZlecenia.KUPNO, 100, 5, 1, 1, 0, symulacja);
+        inwestor.zlozZlecenie(akcja, TypZlecenia.KUPNO, 100, 5, 1, 20, 1, 0, symulacja);
         assertEquals(100, akcja.getZleceniaKupna().getHead().getNext().getLimitCeny());
 
 

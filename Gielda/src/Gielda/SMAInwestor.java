@@ -14,6 +14,7 @@ public class SMAInwestor extends Inwestor {
         super(gotowka, portfel);
     }
 
+    // podejmuje decyzję na podstawie SMA, reszta rzeczy jest losowana
     @Override
     public void podejmijDecyzje(Symulacja symulacja) {
         String[] tickery = symulacja.getTickeryAkcji();
@@ -22,7 +23,6 @@ public class SMAInwestor extends Inwestor {
         if (akcja.getLicznikTur() >= SMA_DLUGI) {
             double smaKrotki = akcja.obliczSMA(SMA_KROTKI);
             double smaDlugi = akcja.obliczSMA(SMA_DLUGI);
-
             int cena = akcja.getOstatniaCena();
             int tura = symulacja.getAktualnaTura();
             int limitCeny = cena + random.nextInt(21) - 10;
@@ -30,15 +30,19 @@ public class SMAInwestor extends Inwestor {
             int kolejnosc = symulacja.getAktualnaKolejnosc();
 
             if (smaKrotki < smaDlugi) {
-                int ilosc = random.nextInt(portfel.getOrDefault(ticker + 1, 1)) + 1;
+                int ilosc = random.nextInt
+                        (this.getPortfel().getOrDefault(ticker + 1, 1)) + 1;
                 if (ilosc <= super.ileAkcji(akcja)) {
-                    zlozZlecenie(akcja, TypZlecenia.SPRZEDAZ, limitCeny, ilosc, tura, kolejnosc, typ, symulacja);
+                    zlozZlecenie(akcja, TypZlecenia.SPRZEDAZ, limitCeny,
+                            ilosc, tura, random.nextInt(tura, tura + 11),
+                            kolejnosc, typ, symulacja);
                 }
-
             } else if (smaKrotki > smaDlugi) {
                 int ilosc = random.nextInt(10) + 1;
-                if (gotowka >= limitCeny * ilosc) {
-                    zlozZlecenie(akcja, TypZlecenia.KUPNO, limitCeny, ilosc, tura, kolejnosc, typ, symulacja);
+                if (this.getGotowka() >= limitCeny * ilosc) {
+                    zlozZlecenie(akcja, TypZlecenia.KUPNO, limitCeny,
+                            ilosc, tura, random.nextInt(tura, tura + 11),
+                            kolejnosc, typ, symulacja);
                 }
             }
         }

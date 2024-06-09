@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Random;
 
 public abstract class Inwestor {
-    protected int gotowka;
-    protected Map<Akcja, Integer> portfel;
+    private int gotowka;
+    private Map<Akcja, Integer> portfel;
     private static final Random random = new Random();
 
     public Inwestor(int gotowka, Map<Akcja, Integer> portfel) {
@@ -38,7 +38,8 @@ public abstract class Inwestor {
 
     public abstract void podejmijDecyzje(Symulacja symulacja);
 
-    public String portfel(){
+    // robi z portfela string, żeby na koniec wypisać akcje i ile ich jest
+    private String portfel(){
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<Akcja, Integer> entry : portfel.entrySet()) {
             Akcja akcja = entry.getKey();
@@ -53,22 +54,26 @@ public abstract class Inwestor {
         return gotowka + " " + portfel();
     }
 
-    public void zlozZlecenie(Akcja akcja, TypZlecenia typZlecenia, int limitCeny,
-                             int ilosc, int tura, int kolejnosc, int typ, Symulacja symulacja){
+    // inwestor składa zlecenie wybranego typu (typ jest losowany)
+    public void zlozZlecenie(Akcja akcja, TypZlecenia typZlecenia,
+                             int limitCeny, int ilosc, int tura,
+                             int terminWaznosci, int kolejnosc,
+                             int typ, Symulacja symulacja){
         if (typ == 0)
-            akcja.dodajZlecenie(new ZlecenieNatychmiastowe(this, akcja, null, typZlecenia,
-                    limitCeny, ilosc, tura, kolejnosc));
+            akcja.dodajZlecenie(new ZlecenieNatychmiastowe(this, akcja, null,
+                    typZlecenia, limitCeny, ilosc, tura, kolejnosc));
         else if (typ == 1)
-            akcja.dodajZlecenie(new ZlecenieWykonajLubAnuluj(this, akcja, null, typZlecenia,
-                    limitCeny, ilosc, tura, kolejnosc));
+            akcja.dodajZlecenie(new ZlecenieWykonajLubAnuluj(this, akcja, null,
+                    typZlecenia, limitCeny, ilosc, tura, kolejnosc));
         else if (typ == 2)
-            akcja.dodajZlecenie(new ZlecenieBezTerminu(this, akcja, null, typZlecenia,
-                    limitCeny, ilosc, tura, kolejnosc));
+            akcja.dodajZlecenie(new ZlecenieBezTerminu(this, akcja, null,
+                    typZlecenia, limitCeny, ilosc, tura, kolejnosc));
         else
-            akcja.dodajZlecenie(new ZlecenieDoKoncaTury(this, akcja, null, typZlecenia,
-                    limitCeny, ilosc, tura, random.nextInt(tura, tura + 11), kolejnosc));
+            akcja.dodajZlecenie(new ZlecenieDoKoncaTury(this, akcja, null,
+                    typZlecenia, limitCeny, ilosc, tura,
+                    terminWaznosci, kolejnosc));
+        // po dodaniu zlecenia zwiększam kolejność w danej turze
         symulacja.zwiekszKolejnosc();
-
     }
 
 }

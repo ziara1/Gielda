@@ -16,8 +16,9 @@ public class Zlecenie {
     private Zlecenie next;
     private int kolejnosc;
 
-    public Zlecenie(Inwestor inwestor, Akcja akcja, Zlecenie next, TypZlecenia typZlecenia,
-                    int limitCeny, int ilosc, int tura, int terminWaznosci, int kolejnosc){
+    public Zlecenie(Inwestor inwestor, Akcja akcja, Zlecenie next,
+                    TypZlecenia typZlecenia, int limitCeny, int ilosc,
+                    int tura, int terminWaznosci, int kolejnosc){
         this.typZlecenia = typZlecenia;
         this.limitCeny = limitCeny;
         this.ilosc = ilosc;
@@ -41,7 +42,7 @@ public class Zlecenie {
         return inwestor;
     }
 
-    public void zmniejszIlosc(int ilosc) {
+    private void zmniejszIlosc(int ilosc) {
         this.ilosc -= ilosc;
     }
 
@@ -74,11 +75,13 @@ public class Zlecenie {
     }
 
     public void usunNastepne() {
-        System.out.println("usunieto " + this.getNext());
+//        System.out.println("usunieto " + this.getNext());
         this.next = this.next.getNext();
     }
 
-
+    // przetwarza dane zlecenie this (przetwarza je z pozostałymi zleceniami)
+    // jeśli to, z którym je przetwarza jest zleceniem wykonaj lub anuluj, to
+    // musi się je dać przetworzyć w całości
     public void przetworz(Zlecenie z, int aktualnaTura) {
         while (this.getIlosc() != 0 && z.getNext() != null) {
             Zlecenie kupno = this;
@@ -86,29 +89,25 @@ public class Zlecenie {
             if (this.typZlecenia == TypZlecenia.SPRZEDAZ) {
                 kupno = z;
                 sprzedaz = this;
-            }
+            } // jeśli cena sprzedaży jest wyższa, to nie dojdzie do transakcji
             if (kupno.getLimitCeny() >= sprzedaz.getLimitCeny()) {
-
+                Inwestor kupiec = kupno.getInwestor();
+                Inwestor sprzedawca = sprzedaz.getInwestor();
                 int cenaTransakcji = this.getLimitCeny();
-                if (this.czyPozniejsze(z))
+                if (this.czyPozniejsze(z)) // liczy się limit wcześniejszego
                     cenaTransakcji = z.getLimitCeny();
-
-                int iloscTransakcji = Math.min(Math.min(kupno.getIlosc(), sprzedaz.getIlosc()),
-                        Math.min(sprzedaz.getInwestor().ileAkcji(akcja), kupno.getInwestor().getGotowka() / cenaTransakcji));
-
-                if (!(z instanceof ZlecenieWykonajLubAnuluj) || iloscTransakcji >= z.getIlosc()) {
+                int iloscTransakcji = Math.min(Math.min(kupno.getIlosc(),
+                        sprzedaz.getIlosc()), Math.min(sprzedawca.ileAkcji
+                        (akcja), kupiec.getGotowka() / cenaTransakcji));
+                if (!(z instanceof ZlecenieWykonajLubAnuluj) ||
+                        iloscTransakcji >= z.getIlosc()) {
                     this.zmniejszIlosc(iloscTransakcji);
                     z.zmniejszIlosc(iloscTransakcji);
-
-                    kupno.getInwestor().dodajGotowke(-cenaTransakcji * iloscTransakcji);
-                    sprzedaz.getInwestor().dodajGotowke(cenaTransakcji * iloscTransakcji);
-
-                    kupno.getInwestor().dodajAkcje(akcja, iloscTransakcji);
-                    sprzedaz.getInwestor().dodajAkcje(akcja, -iloscTransakcji);
-
+                    kupiec.dodajGotowke(-cenaTransakcji * iloscTransakcji);
+                    sprzedawca.dodajGotowke(cenaTransakcji * iloscTransakcji);
+                    kupiec.dodajAkcje(akcja, iloscTransakcji);
+                    sprzedawca.dodajAkcje(akcja, -iloscTransakcji);
                     akcja.setOstatniaCena(cenaTransakcji);
-                    System.out.println("t1 " + this);
-                    System.out.println("t2 " + z);
                 }
             }
             if (z.getIlosc() == 0)
@@ -119,7 +118,7 @@ public class Zlecenie {
             this.getAkcja().usunZlecenie(this);
     }
 
-    // czy this jest pozniej w kolejce od z
+    // czy this jest pozniej w kolejności od z
     public boolean czyPozniejsze(Zlecenie z){
         boolean result = false;
         if (this.typZlecenia == z.getTypZlecenia()) {

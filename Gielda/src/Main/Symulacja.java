@@ -17,48 +17,53 @@ public class Symulacja {
     public void wczytajZPliku(String input) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(input))) {
             String linia;
+            linia = reader.readLine();
+            while (linia.trim().startsWith("#")) // pomija komentarze
+                linia = reader.readLine();
+            wczytajInwestorow(linia);
 
-            // Wczytaj inwestorów
             linia = reader.readLine();
             while (linia.trim().startsWith("#"))
                 linia = reader.readLine();
-            String[] typyInwestorów = linia.split(" ");
-            for (String typ : typyInwestorów) {
-                if (typ.equals("R")) {
-                    inwestorzy.add(new LosowyInwestor(0, new HashMap<>()));
-                } else if (typ.equals("S")) {
-                    inwestorzy.add(new SMAInwestor(0, new HashMap<>()));
-                }
-            }
+            wczytajAkcje(linia);
 
-            // Wczytaj akcje
             linia = reader.readLine();
             while (linia.trim().startsWith("#"))
                 linia = reader.readLine();
-            System.out.println(linia);
-            String[] informacjeOAckjach = linia.split(" ");
-            for (String akcja : informacjeOAckjach) {
-                String[] części = akcja.split(":");
-                String ticker = części[0];
-                int cena = Integer.parseInt(części[1]);
-                akcje.put(ticker, new Akcja(ticker, cena));
-            }
+            wczytajPortfel(linia);
 
-            // Wczytaj początkowy stan portfeli
-            linia = reader.readLine();
-            while (linia.trim().startsWith("#"))
-                linia = reader.readLine();
-            String[] informacjeOPortfelu = linia.split(" ");
-            int gotówka = Integer.parseInt(informacjeOPortfelu[0]);
-            for (Inwestor inwestor : inwestorzy) {
-                inwestor.dodajGotowke(gotówka);
-                for (int i = 1; i < informacjeOPortfelu.length; i++) {
-                    String[] części = informacjeOPortfelu[i].split(":");
-                    //String ticker = części[0];
-                    Akcja akcja = getAkcja(części[0]);
-                    int ilość = Integer.parseInt(części[1]);
-                    inwestor.dodajAkcje(akcja, ilość);
-                }
+        }
+    }
+
+    private void wczytajInwestorow(String linia) throws IOException {
+        String[] typyInwestorow = linia.split(" ");
+        for (String typ : typyInwestorow) {
+            if (typ.equals("R"))
+                inwestorzy.add(new LosowyInwestor(0, new HashMap<>()));
+            else if (typ.equals("S"))
+                inwestorzy.add(new SMAInwestor(0, new HashMap<>()));
+        }
+    }
+    private void wczytajAkcje(String linia) throws IOException {
+        System.out.println(linia);
+        String[] informacjeOAkcjach = linia.split(" ");
+        for (String akcja : informacjeOAkcjach) {
+            String[] czesci = akcja.split(":");
+            String ticker = czesci[0];
+            int cena = Integer.parseInt(czesci[1]);
+            akcje.put(ticker, new Akcja(ticker, cena));
+        }
+    }
+    private void wczytajPortfel(String linia) throws IOException {
+        String[] informacjeOPortfelu = linia.split(" ");
+        int gotowka = Integer.parseInt(informacjeOPortfelu[0]);
+        for (Inwestor inwestor : inwestorzy) {
+            inwestor.dodajGotowke(gotowka);
+            for (int i = 1; i < informacjeOPortfelu.length; i++) {
+                String[] czesci = informacjeOPortfelu[i].split(":");
+                Akcja akcja = getAkcja(czesci[0]);
+                int ilosc = Integer.parseInt(czesci[1]);
+                inwestor.dodajAkcje(akcja, ilosc);
             }
         }
     }
@@ -71,10 +76,6 @@ public class Symulacja {
                 inwestor.podejmijDecyzje(this);
             }
             przetworzZlecenia(aktualnaTura);
-            //for (Map.Entry<String, Akcja> entry : akcje.entrySet()) {
-              //  Akcja akcja = entry.getValue();
-                //akcja.wyczyscZlecenia(aktualnaTura);
-           // }
         }
     }
 

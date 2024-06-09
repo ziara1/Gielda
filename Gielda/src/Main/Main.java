@@ -5,7 +5,8 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) {
         if (args.length != 2) {
-            System.out.println("Użycie: java Main <plik_wejściowy> <liczba_tur>");
+            System.out.println(
+                    "Użycie: java Main <plik_wejściowy> <liczba_tur>");
             return;
         }
 
@@ -16,7 +17,8 @@ public class Main {
         try {
             symulacja.wczytajZPliku("input.txt");
         } catch (IOException e) {
-            System.out.println("Błąd odczytu pliku wejściowego: " + e.getMessage());
+            System.out.println("Błąd odczytu pliku wejściowego: " +
+                    e.getMessage());
             return;
         }
 

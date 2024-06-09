@@ -7,13 +7,11 @@ import Zlecenia.Zlecenie;
 import java.util.*;
 
 public class Akcja {
-    private String ticker;
+    private String ticker; // identyfikator akcji
     private int ostatniaCena;
     private List<Integer> cenyHistoria = new ArrayList<>();
-    //private PriorityQueue<Zlecenia.Zlecenie> zleceniaKupna = new LinkedList<>();
-    //private PriorityQueue<Zlecenia.Zlecenie> zleceniaSprzedazy = new LinkedList<>();
-    private KolejkaZlecen zleceniaKupna = new KolejkaZlecen(TypZlecenia.KUPNO);
-    private KolejkaZlecen zleceniaSprzedazy = new KolejkaZlecen(TypZlecenia.SPRZEDAZ);
+    private KolejkaZlecen zleceniaKupna;
+    private KolejkaZlecen zleceniaSprzedazy;
 
     public Akcja(String ticker, int cena) {
         this.ticker = ticker;
@@ -31,6 +29,7 @@ public class Akcja {
         this.ostatniaCena = ostatniaCena;
     }
 
+    // sprawdzam tak bo na koniec każdej tury aktualizuję cenę
     public int getLicznikTur() {
         return cenyHistoria.size();
     }
@@ -50,21 +49,27 @@ public class Akcja {
             zleceniaKupna.dodajZlecenie(zlecenie);
     }
 
+    // przetwarza po kolei wszystkie zlecenia w kolejkach tej akcji
+    // w zależności od tego które jest wcześniejsze
     public void przetworzZlecenia(int aktualnaTura) {
         Zlecenie buyPtr = zleceniaKupna.getHead().getNext();
         Zlecenie sellPtr = zleceniaSprzedazy.getHead().getNext();
-        while (buyPtr != zleceniaKupna.getTail() && sellPtr != zleceniaSprzedazy.getTail()) {
+        while (buyPtr != zleceniaKupna.getTail() &&
+                sellPtr != zleceniaSprzedazy.getTail()) {
             if (buyPtr.czyPozniejsze(sellPtr)){
-                sellPtr.przetworz(zleceniaKupna.getHead().getNext(), aktualnaTura);
+                sellPtr.przetworz(
+                        zleceniaKupna.getHead().getNext(), aktualnaTura);
                 sellPtr = sellPtr.getNext();
             }
             else {
-                buyPtr.przetworz(zleceniaSprzedazy.getHead().getNext(), aktualnaTura);
+                buyPtr.przetworz(
+                        zleceniaSprzedazy.getHead().getNext(), aktualnaTura);
                 buyPtr = buyPtr.getNext();
             }
         }
         while (buyPtr != zleceniaKupna.getTail()) {
-            buyPtr.przetworz(zleceniaSprzedazy.getHead().getNext(), aktualnaTura);
+            buyPtr.przetworz(
+                    zleceniaSprzedazy.getHead().getNext(), aktualnaTura);
             buyPtr = buyPtr.getNext();
         }
         while (sellPtr != zleceniaSprzedazy.getTail()) {
