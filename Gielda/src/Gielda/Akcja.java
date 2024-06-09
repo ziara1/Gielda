@@ -35,16 +35,19 @@ public class Akcja {
         return cenyHistoria.size();
     }
 
+    public KolejkaZlecen getZleceniaKupna() {
+        return zleceniaKupna;
+    }
+
+    public KolejkaZlecen getZleceniaSprzedazy() {
+        return zleceniaSprzedazy;
+    }
+
     public void dodajZlecenie(Zlecenie zlecenie) {
         if (zlecenie.getTypZlecenia() == TypZlecenia.SPRZEDAZ)
             zleceniaSprzedazy.dodajZlecenie(zlecenie);
         else
             zleceniaKupna.dodajZlecenie(zlecenie);
-    }
-
-    public void wyczyscZlecenia(int tura) {
-        zleceniaSprzedazy.wyczyscKolejke(tura);
-        zleceniaKupna.wyczyscKolejke(tura);
     }
 
     public void przetworzZlecenia(int aktualnaTura) {

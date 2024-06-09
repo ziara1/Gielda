@@ -12,7 +12,5 @@ public class ZlecenieBezTerminu extends Zlecenie {
         super(inwestor, akcja, next, typZlecenia, limitCeny, ilosc, tura, MAX_VALUE, kolejnosc);
 
     }
-    public void przetworz(){
 
-    }
 }

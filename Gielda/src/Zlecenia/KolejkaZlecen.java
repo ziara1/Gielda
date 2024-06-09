@@ -39,7 +39,7 @@ public class KolejkaZlecen {
         return this.tail;
     }
 
-    public void wyczyscKolejke(int tura){
+    /*public void wyczyscKolejke(int tura){
         Zlecenie temp = this.head;
         while (temp.getNext() != this.tail){
             if (temp.getNext().getTerminWaznosci() <= tura)
@@ -47,5 +47,5 @@ public class KolejkaZlecen {
             else
                 temp = temp.getNext();
         }
-    }
+    }*/
 }

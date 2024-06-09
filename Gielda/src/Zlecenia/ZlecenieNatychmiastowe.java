@@ -10,7 +10,4 @@ public class ZlecenieNatychmiastowe extends Zlecenie {
         super(inwestor, akcja, next, typZlecenia, limitCeny, ilosc, tura, tura, kolejnosc);
 
     }
-    public void przetworz(){
-
-    }
 }

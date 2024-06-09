@@ -11,7 +11,4 @@ public class ZlecenieDoKoncaTury extends Zlecenie {
 
 
     }
-    public void przetworz(){
-
-    }
 }
