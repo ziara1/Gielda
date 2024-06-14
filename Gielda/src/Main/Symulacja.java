@@ -51,7 +51,10 @@ public class Symulacja {
             String[] czesci = akcja.split(":");
             String ticker = czesci[0];
             int cena = Integer.parseInt(czesci[1]);
-            akcje.put(ticker, new Akcja(ticker, cena));
+            Akcja nowaAkcja = new Akcja(ticker, cena);
+            akcje.put(ticker, nowaAkcja);
+            for (Inwestor inwestor : inwestorzy)
+                inwestor.dodajAkcje(nowaAkcja, 0);
         }
     }
     private void wczytajPortfel(String linia) throws IOException {
@@ -62,11 +65,17 @@ public class Symulacja {
             for (int i = 1; i < informacjeOPortfelu.length; i++) {
                 String[] czesci = informacjeOPortfelu[i].split(":");
                 Akcja akcja = getAkcja(czesci[0]);
-                int ilosc = Integer.parseInt(czesci[1]);
-                inwestor.dodajAkcje(akcja, ilosc);
+                if (inwestor.getPortfel().containsKey(akcja)) {
+                    int ilosc = Integer.parseInt(czesci[1]);
+                    inwestor.dodajAkcje(akcja, ilosc);
+                }
+                else // sprawdza czy podana akcja istnieje w portfelu inwestora
+                    throw new IllegalArgumentException
+                            ("Akcja " + akcja + " nie istnieje w portfelu.");
             }
         }
     }
+
 
     public void uruchom(int liczbaTur) {
         for (aktualnaTura = 0; aktualnaTura < liczbaTur; aktualnaTura++) {
